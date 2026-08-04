@@ -1,1 +1,141 @@
+import tkinter as tk
+import time
 
+class LockScreenApp:
+    def __init__(self, root, secret_pin):
+        """
+        Initializes the Tkinter window, sets up dimensions, colors,
+        and builds the UI widgets for the mock lock screen.
+        """
+        self.root = root
+        self.root.title("Mock Smartphone Lock Screen")
+        
+        # Set fixed window dimensions (Width x Height)
+        self.root.geometry("340x480")
+        
+        # Apply dark mode background color using Hex code (#1e1e2e)
+        self.root.configure(bg="#1e1e2e")
+        
+        # Disable window resizing to maintain a fixed phone-screen layout
+        self.root.resizable(False, False)
+
+        # Store input variables
+        self.secret_pin = secret_pin
+        self.attempts = 0
+        self.start_time = 0
+
+        # Construct GUI elements
+        self.setup_ui()
+
+    def setup_ui(self):
+        """
+        Creates and positions all widgets (Labels, Display Boxes, Buttons)
+        on the Tkinter window.
+        """
+        # 1. Lock Status Header Label
+        self.status_label = tk.Label(
+            self.root, 
+            text="LOCKED 🔒", 
+            font=("Helvetica", 16, "bold"),
+            fg="#f38ba8",  # Reddish text color for locked status
+            bg="#1e1e2e"   # Matches window background
+        )
+        self.status_label.pack(pady=(35, 15))
+
+        # 2. PIN Display Screen (Simulates the phone screen showing entered digits)
+        self.pin_display = tk.Label(
+            self.root, 
+            text="• • • •", 
+            font=("Consolas", 24, "bold"), # Monospaced font keeps digit width consistent
+            fg="#cdd6f4", 
+            bg="#313244",                  # Darker box background
+            width=12, 
+            height=2, 
+            relief="solid",                # Adds a subtle outer border
+            bd=1
+        )
+        self.pin_display.pack(pady=10)
+
+        # 3. Information Dashboard (Displays attempt count and live duration)
+        self.info_label = tk.Label(
+            self.root, 
+            text="Attempts: 0  |  Time: 0.00s",
+            font=("Helvetica", 11), 
+            fg="#a6adc8", 
+            bg="#1e1e2e"
+        )
+        self.info_label.pack(pady=15)
+
+        # 4. Trigger Button to begin the Brute-Force Simulation
+        self.start_btn = tk.Button(
+            self.root, 
+            text="Start Brute-Force", 
+            font=("Helvetica", 12, "bold"),
+            bg="#89b4fa",                   # Light blue accent color
+            fg="#11111b", 
+            activebackground="#b4befe",
+            padx=10, 
+            pady=5, 
+            command=self.run_brute_force    # Function executed when clicked
+        )
+        self.start_btn.pack(pady=20)
+
+    def run_brute_force(self):
+        """
+        Prepares the state for the attack and initiates the recursive 
+        non-blocking loop.
+        """
+        # Disable button during attack to prevent multiple simultaneous loops
+        self.start_btn.config(state="disabled")
+        self.status_label.config(text="ATTACKING...", fg="#fab387") # Orange status text
+        
+        # Record start timestamp
+        self.start_time = time.time()
+
+        # Recursive helper function for non-blocking UI execution
+        def step(i=0):
+            if i < 10000:
+                # Format current integer to 4 digits with leading zeros (e.g., 7 -> "0007")
+                current_attempt = f"{i:04d}"
+                self.attempts = i + 1
+                elapsed = time.time() - self.start_time
+
+                # Update live Tkinter Label texts
+                self.pin_display.config(text=current_attempt)
+                self.info_label.config(text=f"Attempts: {self.attempts}  |  Time: {elapsed:.2f}s")
+
+                # Conditional check for secret PIN match
+                if current_attempt == self.secret_pin:
+                    # Target PIN found: Update UI to success state
+                    self.status_label.config(text="UNLOCKED! ✅", fg="#a6e3a1") # Green status text
+                    self.pin_display.config(fg="#a6e3a1")
+                    return # Terminate recursion
+                
+                # CRITICAL: root.after schedule
+                # Using root.after(1, ...) allows Tkinter's main loop to process window events,
+                # paint screen updates, and keep the application responsive without freezing.
+                self.root.after(1, step, i + 1)
+            else:
+                # Execution finishes if loop reaches 9999 without matching
+                self.status_label.config(text="FAILED ❌", fg="#f38ba8")
+
+        # Start the recursive step function at index 0
+        step()
+
+# Main Entry Point
+if __name__ == "__main__":
+    # Prompt user in terminal for target secret PIN
+    secret = input("Enter a 4-digit secret PIN to crack: ").strip()
+    
+    # Input Validation: Ensure it is strictly 4 digits
+    if len(secret) == 4 and secret.isdigit():
+        # Instantiate main Tkinter window context
+        root = tk.Tk()
+        
+        # Instantiate application object
+        app = LockScreenApp(root, secret)
+        
+        # Start Tkinter event listener loop (keeps window open)
+        root.mainloop()
+    else:
+        print("Invalid input! Please enter exactly 4 numeric digits (e.g., 0421).")
