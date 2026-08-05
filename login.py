@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 import time
 def login_system():
-    credentials = {"admin": "SecurePass123","student": "Cyber2026","user1": "password"}# Store credentials in a dictionary (Username: Password)
+    credentials = {"feleke": "feleke123","guest": "guest21","hacker": "hacker32"}# Store credentials in a dictionary (Username: Password)
     failed_attempts = 0
     print("=== WELCOME TO THE LOGIN SYSTEM ===")
     while True:
