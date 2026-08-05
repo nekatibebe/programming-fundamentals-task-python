@@ -8,4 +8,3 @@ Developing brute force attack simulator using mock lock screen
 <br>there some concepts applied on this project
 <br>dictionary to compare the stored username with password
 <br>The imported time module to waiting time after unsuccessful attempt 
-<br>the imported to interact the python runtime environment such as to stop the execution.
