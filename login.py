@@ -1,6 +1,5 @@
 from datetime import datetime, timedelta
 import time
-import sys
 def login_system():
     credentials = {"admin": "SecurePass123","student": "Cyber2026","user1": "password"}# Store credentials in a dictionary (Username: Password)
     failed_attempts = 0
