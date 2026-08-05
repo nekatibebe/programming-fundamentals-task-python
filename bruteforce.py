@@ -54,7 +54,7 @@ class LockScreenApp:
             command=self.run_brute_force
         )
         self.start_btn.pack(pady=15)
-    right_frame = tk.Frame(self.root, bg="#1e1e2e")
+        right_frame = tk.Frame(self.root, bg="#1e1e2e")
         right_frame.pack(side="right", fill="both", expand=True, padx=(0, 20), pady=20)
         log_label = tk.Label(
             right_frame, 
