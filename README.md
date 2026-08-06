@@ -8,4 +8,4 @@ Developing brute force attack simulator
 <br>There some concepts applied on this project
 <br>dictionary to compare the stored username with password
 <br>The imported time module to waiting time after unsuccessful attempt 
-<br>If conditions to   
+<br>If conditions to check username is in the list of credentials and the username password is matched with the password.
